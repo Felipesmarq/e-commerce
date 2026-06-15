@@ -1,6 +1,8 @@
-FROM python:3.10-slim
+FROM python:3.11-alpine
 
 WORKDIR /app
+
+RUN apk add --no-cache build-base libffi-dev
 
 COPY requirements.txt .
 

@@ -1,0 +1,38 @@
+services:
+  gateway:
+    build: ./gateway
+    container_name: api-gateway
+    ports:
+      - "5000:5000"
+    depends_on:
+      - users
+      - products
+      - orders
+
+  users:
+    build: ./users
+    container_name: ms-users
+    env_file: .env
+    volumes:
+      - ./users/users.json:/app/users.json
+
+  products:
+    build: ./products
+    container_name: ms-products
+    env_file: .env
+    volumes:
+      - ./products/db_replica1.json:/app/db_replica1.json
+      - ./products/db_replica2.json:/app/db_replica2.json
+
+  orders:
+    build: ./orders
+    container_name: ms-orders
+    env_file: .env
+    environment:
+      - PRODUCTS_SERVICE_URL=http://ms-products:5002
+    volumes:
+      - ./orders/orders.json:/app/orders.json
+
+networks:
+  default:
+    name: ecommerce-network
